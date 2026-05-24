@@ -24,12 +24,17 @@ setImg('footerLogoImg', IMG.logoGrey,  false);
 setImg('aboutBannerImg',IMG.logoRed,   false);
 setImg('dividerImg',    IMG.divider,   false);
 
-/* Parallax */
+/* Parallax — только на десктопе */
 const heroBg = document.getElementById('heroBg');
-window.addEventListener('scroll', () => {
-  const y = window.scrollY;
-  heroBg.style.transform = `scale(1.06) translateY(${y * 0.28}px)`;
-}, { passive: true });
+if (window.innerWidth > 768) {
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    heroBg.style.transform = `scale(1.06) translateY(${y * 0.28}px)`;
+  }, { passive: true });
+} else {
+  heroBg.style.transform = 'none';
+  heroBg.style.backgroundPosition = 'center center';
+}
 
 /* Горизонтальный скролл колесом — плавный */
 const membersGrid = document.querySelector('.members-grid');

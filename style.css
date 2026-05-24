@@ -1043,4 +1043,50 @@ footer {
   .hero-body { padding: 0 24px 40px; max-width: 100%; }
   .features-grid { grid-template-columns: repeat(2, 1fr); }
   .features-grid .feat-card:last-child { grid-column: span 2; }
+  .hero-cards { grid-template-columns: repeat(3, 1fr); }
+  .values-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .hero-bg {
+    transform: none !important;
+    background-position: center center;
+    background-size: cover;
+  }
+  .join-bg {
+    background-position: center center;
+    background-size: cover;
+  }
+}
+
+@media (max-width: 600px) {
+  .wrap { padding: 56px 16px; }
+  .hero-body { padding: 0 16px 32px; }
+
+  /* заголовки по центру */
+  .sec-title, .sec-label, .about-tagline, .values-hd { text-align: center; }
+
+  /* hero cards */
+  .hero-cards { grid-template-columns: repeat(2, 1fr); }
+  .hero-card { padding: 16px; }
+
+  /* features — одна колонка, одинаковые карточки */
+  .features-grid {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+  .features-grid .feat-card:last-child { grid-column: span 1; }
+  .feat-card { padding: 28px 20px; }
+
+  /* values */
+  .values-grid { grid-template-columns: 1fr; }
+
+  /* news */
+  .news-num { font-size: 30px; min-width: 38px; }
+  .news-card { gap: 14px; padding: 18px 4px 18px 0; }
+
+  /* join / footer */
+  .join-content { padding: 72px 16px; }
+  .join-title { font-size: clamp(36px, 10vw, 60px); }
+  footer { padding: 28px 16px; }
 }
