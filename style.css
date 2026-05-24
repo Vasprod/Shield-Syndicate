@@ -1055,6 +1055,7 @@ footer {
 @media (max-width: 768px) {
   .hero-bg {
     transform: none !important;
+    background-image: url("img/blockmobile.png") !important;
     background-position: center center;
     background-size: cover;
   }
