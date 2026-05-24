@@ -139,7 +139,7 @@ nav {
 
 .hero-breadcrumb {
   font-family: 'Oswald', sans-serif;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 300;
   letter-spacing: .22em;
   text-transform: uppercase;
@@ -1069,14 +1069,19 @@ footer {
 
 @media (max-width: 600px) {
   .wrap { padding: 56px 16px; }
-  #hero { justify-content: flex-start; }
+  #hero { justify-content: stretch; align-items: stretch; }
   .hero-body {
-    padding: 100px 16px 32px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 100px 24px 40px;
   }
   .hero-actions {
     flex-direction: column !important;
     align-items: stretch;
     gap: 10px;
+    margin-top: auto;
+    padding-bottom: 24px;
   }
   .hero-actions .btn { width: 100%; text-align: center; }
 
