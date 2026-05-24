@@ -1059,8 +1059,8 @@ footer {
     background-size: cover;
   }
   .join-bg {
-    background-position: center center;
-    background-size: cover;
+    background-image: none !important;
+    background-color: var(--bg2);
   }
 }
 
