@@ -216,47 +216,95 @@ if (statNums.length) {
   statNums.forEach(el => counterObs.observe(el));
 }
 
-/* ── GALLERY SLIDER ─────────────────────────────────────── */
+/* ── GALLERY DRUM ───────────────────────────────────────── */
 (function () {
-  const slides   = document.querySelectorAll('.gallery-slide');
-  const dotsWrap = document.getElementById('galleryDots');
-  const prevBtn  = document.getElementById('galleryPrev');
-  const nextBtn  = document.getElementById('galleryNext');
+  const slides   = Array.from(document.querySelectorAll('.drum-slide'));
+  const dotsWrap = document.getElementById('drumDots');
+  const prevBtn  = document.getElementById('drumPrev');
+  const nextBtn  = document.getElementById('drumNext');
+  const slider   = document.getElementById('drumSlider');
   if (!slides.length) return;
 
   let current = 0;
   let timer;
+  const n = slides.length;
 
-  // создаём точки
+  /* точки */
   slides.forEach((_, i) => {
-    const dot = document.createElement('button');
-    dot.className = 'gallery-dot' + (i === 0 ? ' active' : '');
-    dot.addEventListener('click', () => goTo(i));
-    dotsWrap.appendChild(dot);
+    const d = document.createElement('button');
+    d.className = 'drum-dot';
+    d.addEventListener('click', () => goTo(i));
+    dotsWrap.appendChild(d);
   });
 
-  function goTo(n) {
-    slides[current].classList.remove('active');
-    dotsWrap.children[current].classList.remove('active');
-    current = (n + slides.length) % slides.length;
-    slides[current].classList.add('active');
-    dotsWrap.children[current].classList.add('active');
+  /* позиции: translateX в % от ширины слайда, scale, blur, opacity */
+  const POS = [
+    { tx: 0,    scale: 1,    blur: 0,  opacity: 1,    z: 5 },  // центр
+    { tx: 78,   scale: 0.72, blur: 3,  opacity: 0.72, z: 4 },  // +1
+    { tx: -78,  scale: 0.72, blur: 3,  opacity: 0.72, z: 4 },  // -1
+    { tx: 138,  scale: 0.5,  blur: 7,  opacity: 0.4,  z: 3 },  // +2
+    { tx: -138, scale: 0.5,  blur: 7,  opacity: 0.4,  z: 3 },  // -2
+  ];
+
+  function update() {
+    const dots = dotsWrap.querySelectorAll('.drum-dot');
+    dots.forEach((d, i) => d.classList.toggle('active', i === current));
+
+    slides.forEach((slide, i) => {
+      let rel = ((i - current) % n + n) % n;
+      if (rel > n / 2) rel -= n; /* -n/2 .. n/2 */
+
+      const absRel = Math.abs(rel);
+      if (absRel > 2) {
+        slide.style.opacity = '0';
+        slide.style.pointerEvents = 'none';
+        return;
+      }
+
+      const cfg = POS.find(p => p.tx === 0 && absRel === 0)
+        || POS.find(p => Math.abs(p.tx) === (absRel === 1 ? 78 : 138) && (rel > 0 ? p.tx > 0 : p.tx < 0))
+        || (absRel === 0 ? POS[0] : absRel === 1 ? (rel > 0 ? POS[1] : POS[2]) : (rel > 0 ? POS[3] : POS[4]));
+
+      slide.style.transform  = `translateX(calc(-50% + ${cfg.tx}%)) translateY(-50%) scale(${cfg.scale})`;
+      slide.style.filter     = cfg.blur ? `blur(${cfg.blur}px)` : 'none';
+      slide.style.opacity    = cfg.opacity;
+      slide.style.zIndex     = cfg.z;
+      slide.style.pointerEvents = absRel === 0 ? 'none' : 'auto';
+    });
+  }
+
+  /* клик по боковым — переход к ним */
+  slides.forEach((slide, i) => {
+    slide.addEventListener('click', () => {
+      if (i !== current) goTo(i);
+    });
+  });
+
+  function goTo(idx) {
+    current = ((idx % n) + n) % n;
+    update();
     resetTimer();
   }
 
   function resetTimer() {
     clearInterval(timer);
-    timer = setInterval(() => goTo(current + 1), 5000);
+    timer = setInterval(() => goTo(current + 1), 4000);
   }
 
   prevBtn.addEventListener('click', () => goTo(current - 1));
   nextBtn.addEventListener('click', () => goTo(current + 1));
-
-  // пауза при наведении
-  const slider = document.querySelector('.gallery-slider');
   slider.addEventListener('mouseenter', () => clearInterval(timer));
   slider.addEventListener('mouseleave', resetTimer);
 
+  /* свайп на мобилке */
+  let touchX = 0;
+  slider.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+  slider.addEventListener('touchend',   e => {
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 40) goTo(dx < 0 ? current + 1 : current - 1);
+  }, { passive: true });
+
+  update();
   resetTimer();
 })();
 
