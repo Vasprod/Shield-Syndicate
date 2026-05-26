@@ -663,7 +663,7 @@ nav {
 .features-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 2px;
+  gap: 16px;
   margin-top: 52px;
 }
 
@@ -713,7 +713,7 @@ nav {
   overflow-x: auto;
   overflow-y: visible;
   padding-bottom: 32px;
-  padding-top: 10px;
+  padding-top: 22px;
   scrollbar-width: thin;
   scrollbar-color: var(--bdr-red) transparent;
 }
@@ -1109,7 +1109,7 @@ footer {
   width: 700px;
   height: 700px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(192,57,43,.35) 0%, transparent 65%);
+  background: radial-gradient(circle, rgba(192,57,43,.55) 0%, transparent 65%);
   pointer-events: none;
   transform: translate(-50%, -50%);
   left: 60%;

@@ -23,12 +23,12 @@ module.exports = async function handler(req, res) {
   if (nickname.trim().length > 32) return res.status(400).json({ error: 'nickname_too_long' });
   if (description && description.length > 200) return res.status(400).json({ error: 'description_too_long' });
 
-  /* теги: макс 3, каждый макс 15 символов */
+  /* теги: макс 3, каждый макс 13 символов */
   const cleanTags = (Array.isArray(tags) ? tags : [])
     .map(t => String(t).trim())
     .filter(t => t.length > 0)
     .slice(0, 3);
-  if (cleanTags.some(t => t.length > 15)) return res.status(400).json({ error: 'tag_too_long' });
+  if (cleanTags.some(t => t.length > 13)) return res.status(400).json({ error: 'tag_too_long' });
 
   const existing = await redis.get(`user:${session.discord_id}`);
   if (!existing) return res.status(404).json({ error: 'user_not_found' });
