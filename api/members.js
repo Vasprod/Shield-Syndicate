@@ -27,7 +27,12 @@ module.exports = async function handler(req, res) {
         site_role:        u.site_role || 'Участник',
         joined_at:        u.joined_at,
       }))
-      .sort((a, b) => new Date(a.joined_at) - new Date(b.joined_at));
+      .sort((a, b) => {
+        const order = { 'Основатель': 0, 'Администратор': 1, 'Модератор': 2, 'Участник': 3 };
+        const ro = (order[a.site_role] ?? 3) - (order[b.site_role] ?? 3);
+        if (ro !== 0) return ro;
+        return new Date(a.joined_at) - new Date(b.joined_at);
+      });
 
     res.json(members);
   } catch (e) {
