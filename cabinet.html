@@ -15,7 +15,25 @@
       align-items: center;
       justify-content: center;
       padding: 120px 24px 60px;
+      position: relative;
     }
+    .cabinet-back {
+      position: absolute;
+      top: 80px;
+      left: 32px;
+      font-family: 'Oswald', sans-serif;
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      background: transparent;
+      color: var(--muted);
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      transition: color .2s;
+    }
+    .cabinet-back:hover { color: var(--text); }
     .cabinet-card {
       width: 100%;
       max-width: 480px;
@@ -226,6 +244,7 @@
 </nav>
 
 <div class="cabinet-wrap">
+  <button class="cabinet-back" onclick="history.back()">← Назад</button>
   <div class="cabinet-card" id="cabinetCard" style="display:none">
     <div class="cabinet-ava">
       <img id="cabinetAva" src="" alt="">
