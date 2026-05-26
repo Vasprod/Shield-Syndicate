@@ -1159,6 +1159,24 @@ footer {
   object-fit: contain;
   display: block;
 }
+.drum-slide::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 64px;
+  line-height: 1;
+  color: rgba(255,255,255,.9);
+  text-shadow: 0 0 24px rgba(0,0,0,.9), 0 2px 8px rgba(0,0,0,.7);
+  opacity: 0;
+  transition: opacity .2s;
+  pointer-events: none;
+}
+.drum-slide[data-dir="left"]::after  { content: '‹'; }
+.drum-slide[data-dir="right"]::after { content: '›'; }
+.drum-slide[data-dir="left"]:hover::after,
+.drum-slide[data-dir="right"]:hover::after { opacity: 1; }
 
 .drum-controls {
   display: flex;

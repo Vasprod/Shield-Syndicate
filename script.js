@@ -268,6 +268,7 @@ if (statNums.length) {
       if (absRel > 2) {
         slide.style.opacity = '0';
         slide.style.pointerEvents = 'none';
+        slide.dataset.dir = '';
         return;
       }
 
@@ -280,6 +281,7 @@ if (statNums.length) {
       slide.style.opacity    = cfg.opacity;
       slide.style.zIndex     = cfg.z;
       slide.style.pointerEvents = absRel === 0 ? 'none' : 'auto';
+      slide.dataset.dir = absRel === 0 ? 'center' : absRel === 1 ? (rel < 0 ? 'left' : 'right') : '';
     });
   }
 
