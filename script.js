@@ -423,6 +423,29 @@ function addGlow(card) {
   } catch (e) { /* API недоступен (статика/оффлайн) */ }
 })();
 
+/* ── ABOUT KEYWORD FLASH ────────────────────────────────── */
+(function () {
+  const words = ['Minecraft', 'компания', 'десяти лет', 'разные люди', 'смех', 'поддержку', '2026-м', 'органично'];
+  const copy = document.querySelector('.about-copy');
+  if (!copy) return;
+  copy.querySelectorAll('p').forEach(p => {
+    let html = p.innerHTML;
+    words.forEach(w => {
+      html = html.replace(new RegExp(w, 'g'), `<span class="about-kw">${w}</span>`);
+    });
+    p.innerHTML = html;
+  });
+  const kws = Array.from(copy.querySelectorAll('.about-kw'));
+  if (!kws.length) return;
+  function flash() {
+    const el = kws[Math.floor(Math.random() * kws.length)];
+    el.classList.add('lit');
+    setTimeout(() => el.classList.remove('lit'), 900 + Math.random() * 400);
+    setTimeout(flash, 1200 + Math.random() * 1800);
+  }
+  setTimeout(flash, 2000);
+})();
+
 /* ── NAV AUTH STATE ─────────────────────────────────────── */
 (async () => {
   const authBtn   = document.getElementById('navAuthBtn');

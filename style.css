@@ -562,6 +562,8 @@ nav {
   line-height: 1.85;
   color: #afafaf;
 }
+.about-kw { transition: color .4s ease; }
+.about-kw.lit { color: var(--red); }
 .about-stats {
   display: flex;
   gap: 40px;
@@ -704,7 +706,7 @@ nav {
 }
 
 /* ─── MEMBERS ──────────────────────────────────────────── */
-#members { background: var(--bg2); }
+#members { background: var(--bg2); overflow: hidden; }
 
 .members-grid {
   display: flex;
@@ -756,6 +758,7 @@ nav {
   background: var(--bg2);
   border: 1px solid var(--bdr);
   color: var(--muted);
+  box-shadow: 0 0 0 6px var(--bg2);
 }
 .member-card[data-role="Основатель"] {
   border-color: rgba(192,57,43,.5);
