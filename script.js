@@ -393,12 +393,13 @@ function addGlow(card) {
 
       const card = document.createElement('div');
       card.className = 'member-card rv';
+      card.dataset.role = role;
+      if (role === 'Основатель') card.classList.add('is-leader');
       card.innerHTML = `
         <div class="member-ava"><img src="${user.avatar_url}" alt="${user.nickname}"></div>
         <div class="member-name">${user.nickname}</div>
-        <div class="member-role">${role}</div>
-        ${user.description ? `<div class="member-desc">${user.description}</div>` : ''}
         ${tags.length ? `<div class="member-tags">${tags.map(t => `<span class="member-tag${t.accent ? ' accent' : ''}">${t.text}</span>`).join('')}</div>` : ''}
+        ${user.description ? `<div class="member-desc">${user.description}</div>` : ''}
         <div class="member-card-more">Подробнее →</div>
       `;
       card._userData = userData;
