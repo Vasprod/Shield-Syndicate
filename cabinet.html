@@ -26,12 +26,12 @@
       text-transform: uppercase;
       background: transparent;
       color: var(--muted);
-      border: none;
-      padding: 0;
+      border: 1px solid var(--bdr);
+      padding: 7px 16px;
       cursor: pointer;
-      transition: color .2s;
+      transition: color .2s, border-color .2s;
     }
-    .cabinet-back:hover { color: var(--text); }
+    .cabinet-back:hover { color: var(--text); border-color: var(--bdr-red); }
     .cabinet-card {
       width: 100%;
       max-width: 600px;
