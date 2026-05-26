@@ -1088,61 +1088,64 @@ footer {
 }
 
 /* ─── GALLERY ───────────────────────────────────────────── */
-#gallery { background: var(--bg); overflow: hidden; }
-#gallery .wrap { padding-bottom: 40px; }
+#gallery { background: var(--bg); }
+#gallery .wrap { padding-bottom: 0; }
 
 .gallery-slider {
   position: relative;
-  width: 100%;
-  aspect-ratio: 16/7;
+  max-width: 1180px;
+  margin: 40px auto 0;
+  padding: 0 52px;
   overflow: hidden;
 }
-.gallery-track { position: relative; width: 100%; height: 100%; }
+.gallery-track { position: relative; width: 100%; }
 
 .gallery-slide {
-  position: absolute;
-  inset: 0;
+  display: none;
   opacity: 0;
   transition: opacity .7s ease;
 }
-.gallery-slide.active { opacity: 1; }
+.gallery-slide.active {
+  display: block;
+  opacity: 1;
+}
 .gallery-slide img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
+  max-height: 65vh;
+  object-fit: contain;
   display: block;
 }
 
+.gallery-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 20px;
+  padding-bottom: 60px;
+}
+
 .gallery-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(8,8,8,.6);
+  background: transparent;
   border: 1px solid var(--bdr);
   color: var(--text);
-  font-size: 28px;
+  font-size: 22px;
   line-height: 1;
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   cursor: pointer;
-  z-index: 2;
   transition: background .2s, border-color .2s;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 .gallery-arrow:hover { background: var(--red); border-color: var(--red); }
-.gallery-arrow-prev { left: 24px; }
-.gallery-arrow-next { right: 24px; }
 
 .gallery-dots {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   gap: 8px;
-  z-index: 2;
 }
 .gallery-dot {
   width: 6px;
@@ -1158,10 +1161,7 @@ footer {
 }
 
 @media (max-width: 600px) {
-  .gallery-slider { aspect-ratio: 4/3; }
-  .gallery-arrow { width: 36px; height: 36px; font-size: 20px; }
-  .gallery-arrow-prev { left: 10px; }
-  .gallery-arrow-next { right: 10px; }
+  .gallery-slider { padding: 0 16px; }
 }
 
 /* ─── MEMBER CARD — DESC ───────────────────────────────── */
