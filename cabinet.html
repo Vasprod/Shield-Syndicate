@@ -145,6 +145,20 @@
     }
     .admin-row-btn:hover { background: #a93226; }
     .admin-row-btn.saved { background: #4caf50; }
+    .admin-row-kick {
+      font-family: 'Oswald', sans-serif;
+      font-size: 11px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--bdr);
+      padding: 8px 10px;
+      cursor: pointer;
+      transition: color .2s, border-color .2s;
+      flex-shrink: 0;
+    }
+    .admin-row-kick:hover { color: var(--red); border-color: var(--red); }
     .cabinet-logout {
       font-family: 'Oswald', sans-serif;
       font-size: 12px;
@@ -330,9 +344,30 @@
         setTimeout(() => { btn.textContent = 'OK'; btn.classList.remove('saved'); btn.disabled = false; }, 1500);
       });
 
+      const kick = document.createElement('button');
+      kick.className = 'admin-row-kick';
+      kick.textContent = '✕';
+      kick.title = 'Удалить участника';
+      kick.addEventListener('click', async () => {
+        if (!confirm(`Удалить ${m.nickname} из участников?`)) return;
+        kick.disabled = true;
+        const r = await fetch('/api/admin/kick', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ discord_id: m.discord_id }),
+        });
+        if (r.ok) {
+          row.style.opacity = '.3';
+          row.style.pointerEvents = 'none';
+        } else {
+          kick.disabled = false;
+        }
+      });
+
       row.appendChild(name);
       row.appendChild(sel);
       row.appendChild(btn);
+      row.appendChild(kick);
       list.appendChild(row);
     });
   }
