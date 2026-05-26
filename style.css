@@ -1067,14 +1067,6 @@ footer {
 .hero-card:hover   .card-glow,
 .member-card:hover .card-glow { opacity: 1; }
 
-.member-card .card-glow {
-  background: radial-gradient(
-    360px circle at var(--gx, -999px) var(--gy, -999px),
-    rgba(192,57,43,.5) 0%,
-    transparent 55%
-  );
-}
-
 /* Контент карточек выше слоя glow */
 .feat-card > *:not(.card-glow),
 .val-card  > *:not(.card-glow),
