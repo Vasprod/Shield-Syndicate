@@ -34,14 +34,6 @@ module.exports = async function handler(req, res) {
   if (!existing) return res.status(404).json({ error: 'user_not_found' });
 
   const newNickname = nickname.trim();
-  if (newNickname !== existing.nickname && existing.nickname_updated_at) {
-    const msSince = Date.now() - new Date(existing.nickname_updated_at).getTime();
-    const msWeek  = 7 * 24 * 60 * 60 * 1000;
-    if (msSince < msWeek) {
-      const nextAllowed = new Date(new Date(existing.nickname_updated_at).getTime() + msWeek);
-      return res.status(429).json({ error: 'nickname_cooldown', next_allowed: nextAllowed.toISOString() });
-    }
-  }
 
   const updated = {
     ...existing,
