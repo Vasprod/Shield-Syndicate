@@ -735,6 +735,7 @@ nav {
   text-align: center;
   position: relative;
   transition: border-color .3s, transform .3s;
+  cursor: pointer;
 }
 .member-card:hover {
   border-color: var(--bdr-red);
@@ -1094,7 +1095,7 @@ footer {
 .drum-slider {
   position: relative;
   width: 100%;
-  height: clamp(200px, 35vw, 480px);
+  height: clamp(240px, 42vw, 520px);
   overflow: hidden;
   margin-top: 40px;
 }
@@ -1105,16 +1106,18 @@ footer {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 52%;
+  width: 68%;
+  height: 100%;
   cursor: pointer;
-  transition: transform .55s cubic-bezier(.25,.46,.45,.94),
-              filter  .55s cubic-bezier(.25,.46,.45,.94),
-              opacity .55s ease;
+  transition: transform .45s cubic-bezier(.25,.46,.45,.94),
+              filter  .45s cubic-bezier(.25,.46,.45,.94),
+              opacity .45s ease;
   will-change: transform, filter, opacity;
 }
 .drum-slide img {
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
   display: block;
   border: 1px solid var(--bdr);
 }
@@ -1156,8 +1159,8 @@ footer {
 .drum-dot.active { background: var(--red); transform: scale(1.35); }
 
 @media (max-width: 600px) {
-  .drum-slide { width: 78%; }
-  .drum-slider { height: clamp(180px, 55vw, 300px); }
+  .drum-slide { width: 86%; }
+  .drum-slider { height: clamp(200px, 56vw, 320px); }
 }
 
 /* ─── MEMBER CARD — DESC ───────────────────────────────── */
@@ -1172,21 +1175,19 @@ footer {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-.member-desc-btn {
+.member-card-more {
   font-family: 'Oswald', sans-serif;
   font-size: 10px;
-  letter-spacing: .12em;
+  letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--red);
-  background: none;
-  border: none;
-  padding: 4px 0 0;
-  cursor: pointer;
-  display: block;
-  opacity: .75;
+  margin-top: 10px;
+  opacity: 0;
   transition: opacity .2s;
+  position: relative;
+  z-index: 1;
 }
-.member-desc-btn:hover { opacity: 1; }
+.member-card:hover .member-card-more { opacity: 1; }
 
 /* ─── MEMBER MODAL ──────────────────────────────────────── */
 .member-modal-overlay {
@@ -1254,6 +1255,25 @@ footer {
   text-transform: uppercase;
   color: var(--red);
   margin-bottom: 16px;
+}
+.member-modal-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.member-modal-tag {
+  font-family: 'Oswald', sans-serif;
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border: 1px solid var(--bdr);
+  padding: 3px 10px;
+}
+.member-modal-tag.accent {
+  color: var(--red);
+  border-color: rgba(192,57,43,.4);
 }
 .member-modal-desc {
   font-size: 13px;

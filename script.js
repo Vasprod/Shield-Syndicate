@@ -85,6 +85,7 @@ document.querySelectorAll('.feat-card, .val-card, .hero-card, .member-card').for
   });
 });
 
+
 /* ── HERO INTRO ANIMATION ───────────────────────────────────── */
 
 function splitLetters(el) {
@@ -105,6 +106,12 @@ const heroCrumb       = document.querySelector('.hero-breadcrumb');
 const heroFounded     = document.querySelector('.hero-founded');
 const heroActions     = document.querySelector('.hero-actions');
 const decoEls         = document.querySelectorAll('.deco-corner, .deco-plus, .deco-dots, .deco-year');
+
+/* если уже видели анимацию в этой сессии — сразу показываем всё */
+if (sessionStorage.getItem('heroAnimDone')) {
+  heroTitleEl.classList.add('shimmer');
+  // tl ниже не создаём, просто выходим из блока
+} else {
 
 // Скрываем до старта анимации
 [heroCrumb, heroFounded, heroActions, heroSyndicateEl].forEach(el => {
@@ -137,6 +144,7 @@ const tl = anime.timeline({
     const text = shieldLetters.map(s => s.textContent).join('');
     heroTitleEl.textContent = text;
     heroTitleEl.classList.add('shimmer');
+    sessionStorage.setItem('heroAnimDone', '1');
   },
 });
 
@@ -192,6 +200,8 @@ tl
     easing: 'easeOutBack',
   }, '-=300');
 
+} // end else (hero animation)
+
 /* ── STAT COUNTERS (about section) ─────────────────────────── */
 
 const statNums = document.querySelectorAll('.stat-num');
@@ -240,10 +250,10 @@ if (statNums.length) {
   /* позиции: translateX в % от ширины слайда, scale, blur, opacity */
   const POS = [
     { tx: 0,    scale: 1,    blur: 0,  opacity: 1,    z: 5 },  // центр
-    { tx: 78,   scale: 0.72, blur: 3,  opacity: 0.72, z: 4 },  // +1
-    { tx: -78,  scale: 0.72, blur: 3,  opacity: 0.72, z: 4 },  // -1
-    { tx: 138,  scale: 0.5,  blur: 7,  opacity: 0.4,  z: 3 },  // +2
-    { tx: -138, scale: 0.5,  blur: 7,  opacity: 0.4,  z: 3 },  // -2
+    { tx: 90,   scale: 0.52, blur: 4,  opacity: 0.55, z: 4 },  // +1
+    { tx: -90,  scale: 0.52, blur: 4,  opacity: 0.55, z: 4 },  // -1
+    { tx: 155,  scale: 0.36, blur: 8,  opacity: 0.25, z: 3 },  // +2
+    { tx: -155, scale: 0.36, blur: 8,  opacity: 0.25, z: 3 },  // -2
   ];
 
   function update() {
@@ -288,7 +298,7 @@ if (statNums.length) {
 
   function resetTimer() {
     clearInterval(timer);
-    timer = setInterval(() => goTo(current + 1), 4000);
+    timer = setInterval(() => goTo(current + 1), 2500);
   }
 
   prevBtn.addEventListener('click', () => goTo(current - 1));
@@ -314,18 +324,25 @@ const memberModalClose   = document.getElementById('memberModalClose');
 const memberModalAva     = document.getElementById('memberModalAva');
 const memberModalName    = document.getElementById('memberModalName');
 const memberModalRole    = document.getElementById('memberModalRole');
+const memberModalTags    = document.getElementById('memberModalTags');
 const memberModalDesc    = document.getElementById('memberModalDesc');
 const memberModalSince   = document.getElementById('memberModalSince');
 
-function openMemberModal(user) {
-  memberModalAva.src        = user.avatar_url;
-  memberModalName.textContent = user.nickname;
-  memberModalRole.textContent = 'Участник';
-  memberModalDesc.textContent = user.description || 'Описание не указано';
-  if (user.joined_at) {
-    const d = new Date(user.joined_at);
-    memberModalSince.textContent = 'В клане с ' + d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
-  }
+function openMemberModal({ avatarSrc, name, role, description, tags, since }) {
+  memberModalAva.src          = avatarSrc || '';
+  memberModalName.textContent = name || '';
+  memberModalRole.textContent = role || '';
+
+  memberModalTags.innerHTML   = (tags && tags.length)
+    ? tags.map(t => `<span class="member-modal-tag${t.accent ? ' accent' : ''}">${t.text}</span>`).join('')
+    : '';
+
+  memberModalDesc.textContent = description || '';
+  memberModalDesc.style.display = description ? '' : 'none';
+
+  memberModalSince.textContent  = since || '';
+  memberModalSince.style.display = since ? '' : 'none';
+
   memberModal.classList.add('open');
 }
 
@@ -358,25 +375,36 @@ function addGlow(card) {
     const grid = document.querySelector('.members-grid');
 
     members.forEach(user => {
+      const tags = (user.tags || []).map((t, i, arr) => ({ text: t, accent: i === arr.length - 1 }));
+      let since = null;
+      if (user.joined_at) {
+        const d = new Date(user.joined_at);
+        since = 'В клане с ' + d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+      }
+      const userData = {
+        avatarSrc:   user.avatar_url,
+        name:        user.nickname,
+        role:        'Участник',
+        description: user.description || '',
+        tags,
+        since,
+      };
+
       const card = document.createElement('div');
       card.className = 'member-card rv';
-
-      const hasLongDesc = user.description && user.description.length > 80;
-
       card.innerHTML = `
         <div class="member-ava"><img src="${user.avatar_url}" alt="${user.nickname}"></div>
         <div class="member-name">${user.nickname}</div>
         <div class="member-role">Участник</div>
         ${user.description ? `<div class="member-desc">${user.description}</div>` : ''}
-        ${hasLongDesc ? `<button class="member-desc-btn">Подробнее</button>` : ''}
-        <div class="member-tags"></div>
+        ${tags.length ? `<div class="member-tags">${tags.map(t => `<span class="member-tag${t.accent ? ' accent' : ''}">${t.text}</span>`).join('')}</div>` : ''}
+        <div class="member-card-more">Подробнее →</div>
       `;
-
-      if (hasLongDesc) {
-        card.querySelector('.member-desc-btn').addEventListener('click', () => openMemberModal(user));
-      }
+      card._userData = userData;
 
       addGlow(card);
+      card.addEventListener('click', () => openMemberModal(card._userData));
+
       obs.observe(card);
       grid.appendChild(card);
     });

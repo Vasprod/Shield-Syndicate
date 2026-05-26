@@ -1,5 +1,6 @@
 {
   "rewrites": [
-    { "source": "/cabinet", "destination": "/cabinet.html" }
+    { "source": "/cabinet",    "destination": "/cabinet.html" },
+    { "source": "/not-member", "destination": "/not-member.html" }
   ]
 }

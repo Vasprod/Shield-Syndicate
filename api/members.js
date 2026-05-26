@@ -18,11 +18,13 @@ module.exports = async function handler(req, res) {
     const members = users
       .filter(Boolean)
       .map(u => ({
-        discord_id: u.discord_id,
-        nickname: u.nickname,
-        description: u.description || '',
-        avatar_url: u.avatar_url,
-        joined_at: u.joined_at,
+        discord_id:       u.discord_id,
+        discord_username: u.discord_username,
+        nickname:         u.nickname,
+        description:      u.description || '',
+        avatar_url:       u.avatar_url,
+        tags:             u.tags || [],
+        joined_at:        u.joined_at,
       }))
       .sort((a, b) => new Date(a.joined_at) - new Date(b.joined_at));
 

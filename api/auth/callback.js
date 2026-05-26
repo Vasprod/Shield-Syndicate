@@ -34,13 +34,13 @@ module.exports = async function handler(req, res) {
     );
 
     if (memberRes.status !== 200) {
-      return res.redirect('/?error=not_in_server');
+      return res.redirect('/not-member');
     }
 
     const member = await memberRes.json();
     const hasRole = member.roles.includes(process.env.DISCORD_MEMBER_ROLE_ID);
     if (!hasRole) {
-      return res.redirect('/?error=no_role');
+      return res.redirect('/not-member');
     }
 
     // Аватарка Discord

@@ -78,6 +78,8 @@
     .cabinet-input:focus,
     .cabinet-textarea:focus { border-color: var(--red); }
     .cabinet-textarea { height: 100px; }
+    .cabinet-tags-row { display: flex; gap: 8px; }
+    .cabinet-tag-input { flex: 1; min-width: 0; }
     .cabinet-actions {
       display: flex;
       gap: 12px;
@@ -151,10 +153,19 @@
   <ul class="nav-links">
     <li><a href="/">Главная</a></li>
     <li><a href="/#about">О клане</a></li>
+    <li><a href="/#features">Преимущества</a></li>
     <li><a href="/#members">Состав</a></li>
+    <li><a href="/#gallery">Галерея</a></li>
     <li><a href="/#news">Новости</a></li>
+    <li><a href="/#join">Контакты</a></li>
   </ul>
-  <a href="/api/auth/logout" class="nav-btn">Выйти</a>
+  <div class="nav-right">
+    <a href="https://discord.gg/bAbg7xfckq" target="_blank" rel="noopener" class="nav-btn">Вступить в клан</a>
+    <a href="/api/auth/logout" class="nav-auth">
+      <span class="nav-auth-text">Выйти</span>
+      <span class="nav-auth-arrow">→</span>
+    </a>
+  </div>
 </nav>
 
 <div class="cabinet-wrap">
@@ -168,12 +179,20 @@
 
     <form class="cabinet-form" id="cabinetForm">
       <div class="cabinet-field">
-        <label class="cabinet-label" for="nickInput">Никнейм на сайте</label>
-        <input class="cabinet-input" id="nickInput" type="text" maxlength="32" placeholder="Твой ник">
+        <label class="cabinet-label" for="nickInput">Игровой никнейм <span style="opacity:.5;font-size:9px">по которому тебя знают · менять раз в неделю</span></label>
+        <input class="cabinet-input" id="nickInput" type="text" maxlength="32" placeholder="Твой игровой ник">
       </div>
       <div class="cabinet-field">
         <label class="cabinet-label" for="descInput">О себе</label>
-        <textarea class="cabinet-textarea" id="descInput" maxlength="300" placeholder="Пару слов о себе..."></textarea>
+        <textarea class="cabinet-textarea" id="descInput" maxlength="200" placeholder="Пару слов о себе..."></textarea>
+      </div>
+      <div class="cabinet-field">
+        <label class="cabinet-label">Теги <span style="opacity:.5;font-size:9px">макс. 3 тега · 15 символов · последний выделяется цветом</span></label>
+        <div class="cabinet-tags-row">
+          <input class="cabinet-input cabinet-tag-input" type="text" maxlength="15" placeholder="Тег 1">
+          <input class="cabinet-input cabinet-tag-input" type="text" maxlength="15" placeholder="Тег 2">
+          <input class="cabinet-input cabinet-tag-input" type="text" maxlength="15" placeholder="Акцент">
+        </div>
       </div>
       <div class="cabinet-actions">
         <button class="cabinet-save" id="saveBtn" type="submit">Сохранить</button>
@@ -195,28 +214,27 @@
   const joined   = document.getElementById('cabinetJoined');
   const nickIn   = document.getElementById('nickInput');
   const descIn   = document.getElementById('descInput');
+  const tagIns   = document.querySelectorAll('.cabinet-tag-input');
   const saveBtn  = document.getElementById('saveBtn');
   const status   = document.getElementById('cabinetStatus');
 
   async function loadUser() {
     const res = await fetch('/api/user/me');
-    if (res.status === 401) {
-      window.location.href = '/api/auth/discord';
-      return;
-    }
+    if (res.status === 401) { window.location.href = '/api/auth/discord'; return; }
     const user = await res.json();
 
-    ava.src            = user.avatar_url;
+    ava.src              = user.avatar_url;
     username.textContent = '@' + user.discord_username;
     dispName.textContent = user.nickname;
-    nickIn.value       = user.nickname;
-    descIn.value       = user.description || '';
+    nickIn.value         = user.nickname;
+    descIn.value         = user.description || '';
+
+    (user.tags || []).forEach((t, i) => { if (tagIns[i]) tagIns[i].value = t; });
 
     if (user.joined_at) {
       const d = new Date(user.joined_at);
       joined.textContent = 'В клане с ' + d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
     }
-
     card.style.display = 'block';
   }
 
@@ -226,10 +244,12 @@
     status.textContent = '';
     status.className = 'cabinet-status';
 
+    const tags = Array.from(tagIns).map(i => i.value.trim()).filter(Boolean);
+
     const res = await fetch('/api/user/update', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nickname: nickIn.value, description: descIn.value }),
+      body: JSON.stringify({ nickname: nickIn.value, description: descIn.value, tags }),
     });
     const data = await res.json();
 
@@ -238,12 +258,18 @@
       status.textContent = 'Сохранено';
       status.className = 'cabinet-status ok';
     } else {
-      const msgs = {
-        nickname_required: 'Никнейм не может быть пустым',
-        nickname_too_long: 'Никнейм слишком длинный (макс. 32 символа)',
-        description_too_long: 'Описание слишком длинное (макс. 300 символов)',
-      };
-      status.textContent = msgs[data.error] || 'Ошибка сохранения';
+      let errText = 'Ошибка сохранения';
+      if (data.error === 'nickname_required')    errText = 'Никнейм не может быть пустым';
+      else if (data.error === 'nickname_too_long')    errText = 'Никнейм слишком длинный (макс. 32 символа)';
+      else if (data.error === 'description_too_long') errText = 'Описание слишком длинное (макс. 200 символов)';
+      else if (data.error === 'tag_too_long')         errText = 'Тег не может быть длиннее 15 символов';
+      else if (data.error === 'nickname_cooldown') {
+        const days = data.next_allowed
+          ? Math.ceil((new Date(data.next_allowed) - Date.now()) / (1000 * 60 * 60 * 24))
+          : 7;
+        errText = `Никнейм можно менять раз в неделю. Осталось ${days} дн.`;
+      }
+      status.textContent = errText;
       status.className = 'cabinet-status err';
     }
 
