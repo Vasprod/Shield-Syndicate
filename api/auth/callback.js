@@ -59,7 +59,7 @@ module.exports = async function handler(req, res) {
       tags:                existing?.tags || [],
       site_role:           existing?.site_role || 'Участник',
       nickname_updated_at: existing?.nickname_updated_at,
-      joined_at:           existing?.joined_at || new Date().toISOString(),
+      joined_at:           member.joined_at,
     };
     await redis.set(`user:${user.id}`, profile);
 
