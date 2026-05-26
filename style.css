@@ -1140,7 +1140,6 @@ footer {
   height: 100%;
   object-fit: contain;
   display: block;
-  border: 1px solid var(--bdr);
 }
 
 .drum-controls {

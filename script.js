@@ -250,10 +250,10 @@ if (statNums.length) {
   /* позиции: translateX в % от ширины слайда, scale, blur, opacity */
   const POS = [
     { tx: 0,   scale: 1,    blur: 0, opacity: 1,    z: 5 },  // центр
-    { tx: 76,  scale: 0.52, blur: 4, opacity: 0.55, z: 4 },  // +1
-    { tx: -76, scale: 0.52, blur: 4, opacity: 0.55, z: 4 },  // -1
-    { tx: 95,  scale: 0.36, blur: 8, opacity: 0.2,  z: 3 },  // +2
-    { tx: -95, scale: 0.36, blur: 8, opacity: 0.2,  z: 3 },  // -2
+    { tx: 68,  scale: 0.52, blur: 4, opacity: 0.55, z: 4 },  // +1
+    { tx: -68, scale: 0.52, blur: 4, opacity: 0.55, z: 4 },  // -1
+    { tx: 90,  scale: 0.36, blur: 8, opacity: 0.2,  z: 3 },  // +2
+    { tx: -90, scale: 0.36, blur: 8, opacity: 0.2,  z: 3 },  // -2
   ];
 
   function update() {
