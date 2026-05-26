@@ -1279,7 +1279,14 @@ footer {
   .nav-btn { display: none; }
   .nav-auth-text { display: none; }
   .nav-auth-arrow { display: inline; }
-  .nav-auth { padding: 8px 14px; }
+  .nav-right { margin-left: auto; }
+  .nav-auth {
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+  }
   .wrap { padding: 72px 24px; }
   .about-grid { grid-template-columns: 1fr; gap: 40px; }
   .about-stats { gap: 28px; }
