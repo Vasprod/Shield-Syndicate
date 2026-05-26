@@ -350,6 +350,16 @@ memberModalClose.addEventListener('click', () => memberModal.classList.remove('o
 memberModal.addEventListener('click', e => { if (e.target === memberModal) memberModal.classList.remove('open'); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') memberModal.classList.remove('open'); });
 
+const membersSection = document.getElementById('members');
+const membersGlow    = membersSection && membersSection.querySelector('.members-glow');
+if (membersSection && membersGlow) {
+  membersSection.addEventListener('mousemove', e => {
+    const r = membersSection.getBoundingClientRect();
+    membersGlow.style.left = (e.clientX - r.left) + 'px';
+    membersGlow.style.top  = (e.clientY - r.top)  + 'px';
+  });
+}
+
 function addGlow(card) {
   const glow = document.createElement('span');
   glow.className = 'card-glow';

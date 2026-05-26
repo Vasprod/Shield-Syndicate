@@ -1067,6 +1067,14 @@ footer {
 .hero-card:hover   .card-glow,
 .member-card:hover .card-glow { opacity: 1; }
 
+.member-card .card-glow {
+  background: radial-gradient(
+    360px circle at var(--gx, -999px) var(--gy, -999px),
+    rgba(192,57,43,.28) 0%,
+    transparent 55%
+  );
+}
+
 /* Контент карточек выше слоя glow */
 .feat-card > *:not(.card-glow),
 .val-card  > *:not(.card-glow),
@@ -1080,7 +1088,7 @@ footer {
   position: relative;
 }
 
-#features::before, #values::before, #news::before, #members::before {
+#features::before, #values::before, #news::before {
   content: '';
   position: absolute;
   width: 640px;
@@ -1096,7 +1104,19 @@ footer {
 }
 #values::before  { left: 70%; animation-delay: -5s;  animation-duration: 17s; }
 #news::before    { left: 40%; animation-delay: -9s;  animation-duration: 11s; }
-#members::before { left: 60%; animation-delay: -3s;  animation-duration: 20s; }
+.members-glow {
+  position: absolute;
+  width: 700px;
+  height: 700px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(192,57,43,.13) 0%, transparent 65%);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  left: 60%;
+  top: 50%;
+  z-index: 0;
+  transition: left .12s ease, top .12s ease;
+}
 
 /* Контент секций выше ambient glow */
 #features .wrap, #values .wrap, #news .wrap, #members .wrap { position: relative; z-index: 1; }
