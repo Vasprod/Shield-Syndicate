@@ -1070,7 +1070,7 @@ footer {
 .member-card .card-glow {
   background: radial-gradient(
     360px circle at var(--gx, -999px) var(--gy, -999px),
-    rgba(192,57,43,.28) 0%,
+    rgba(192,57,43,.5) 0%,
     transparent 55%
   );
 }
@@ -1109,7 +1109,7 @@ footer {
   width: 700px;
   height: 700px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(192,57,43,.13) 0%, transparent 65%);
+  background: radial-gradient(circle, rgba(192,57,43,.35) 0%, transparent 65%);
   pointer-events: none;
   transform: translate(-50%, -50%);
   left: 60%;
