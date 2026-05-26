@@ -51,12 +51,15 @@ module.exports = async function handler(req, res) {
     // Создаём или обновляем профиль
     const existing = await redis.get(`user:${user.id}`);
     const profile = {
-      discord_id: user.id,
-      discord_username: user.username,
-      avatar_url: avatarUrl,
-      nickname: existing?.nickname || member.nick || user.global_name || user.username,
-      description: existing?.description || '',
-      joined_at: existing?.joined_at || new Date().toISOString(),
+      discord_id:          user.id,
+      discord_username:    user.username,
+      avatar_url:          avatarUrl,
+      nickname:            existing?.nickname || member.nick || user.global_name || user.username,
+      description:         existing?.description || '',
+      tags:                existing?.tags || [],
+      site_role:           existing?.site_role || 'Участник',
+      nickname_updated_at: existing?.nickname_updated_at,
+      joined_at:           existing?.joined_at || new Date().toISOString(),
     };
     await redis.set(`user:${user.id}`, profile);
 

@@ -10,5 +10,6 @@ module.exports = async function handler(req, res) {
   const user = await redis.get(`user:${session.discord_id}`);
   if (!user) return res.status(404).json({ error: 'user_not_found' });
 
-  res.status(200).json(user);
+  const is_owner = session.discord_id === process.env.DISCORD_OWNER_ID;
+  res.status(200).json({ ...user, is_owner });
 };

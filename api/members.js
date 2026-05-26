@@ -24,6 +24,7 @@ module.exports = async function handler(req, res) {
         description:      u.description || '',
         avatar_url:       u.avatar_url,
         tags:             u.tags || [],
+        site_role:        u.site_role || 'Участник',
         joined_at:        u.joined_at,
       }))
       .sort((a, b) => new Date(a.joined_at) - new Date(b.joined_at));

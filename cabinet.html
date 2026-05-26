@@ -102,6 +102,49 @@
     }
     .cabinet-save:hover { background: #a93226; }
     .cabinet-save:disabled { opacity: .5; cursor: default; }
+    .admin-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .admin-row-name {
+      flex: 1;
+      font-family: 'Oswald', sans-serif;
+      font-size: 13px;
+      letter-spacing: .08em;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .admin-row-select {
+      background: var(--bg3);
+      border: 1px solid var(--bdr);
+      color: var(--text);
+      font-family: 'Oswald', sans-serif;
+      font-size: 11px;
+      letter-spacing: .1em;
+      padding: 8px 10px;
+      outline: none;
+      cursor: pointer;
+      flex: 0 0 150px;
+    }
+    .admin-row-select:focus { border-color: var(--red); }
+    .admin-row-btn {
+      font-family: 'Oswald', sans-serif;
+      font-size: 11px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      background: var(--red);
+      color: #fff;
+      border: none;
+      padding: 8px 14px;
+      cursor: pointer;
+      transition: background .2s, opacity .2s;
+      flex-shrink: 0;
+    }
+    .admin-row-btn:hover { background: #a93226; }
+    .admin-row-btn.saved { background: #4caf50; }
     .cabinet-logout {
       font-family: 'Oswald', sans-serif;
       font-size: 12px;
@@ -177,6 +220,12 @@
     <div class="cabinet-name" id="cabinetDisplayName"></div>
     <div class="cabinet-joined" id="cabinetJoined"></div>
 
+    <div id="adminSection" style="display:none">
+      <div style="border-top:1px solid var(--bdr);margin-bottom:32px"></div>
+      <div class="cabinet-label" style="margin-bottom:16px;letter-spacing:.2em">Управление ролями</div>
+      <div id="adminList" style="display:flex;flex-direction:column;gap:10px"></div>
+    </div>
+
     <form class="cabinet-form" id="cabinetForm">
       <div class="cabinet-field">
         <label class="cabinet-label" for="nickInput">Игровой никнейм <span style="opacity:.5;font-size:9px">по которому тебя знают · менять раз в неделю</span></label>
@@ -236,6 +285,56 @@
       joined.textContent = 'В клане с ' + d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
     }
     card.style.display = 'block';
+
+    if (user.is_owner) loadAdminPanel();
+  }
+
+  async function loadAdminPanel() {
+    const section = document.getElementById('adminSection');
+    const list    = document.getElementById('adminList');
+    section.style.display = 'block';
+
+    const res     = await fetch('/api/members');
+    const members = await res.json();
+    const ROLES   = ['Участник', 'Модератор', 'Администратор', 'Основатель'];
+
+    members.forEach(m => {
+      const row = document.createElement('div');
+      row.className = 'admin-row';
+
+      const name = document.createElement('span');
+      name.className = 'admin-row-name';
+      name.textContent = m.nickname;
+
+      const sel = document.createElement('select');
+      sel.className = 'admin-row-select';
+      ROLES.forEach(r => {
+        const opt = document.createElement('option');
+        opt.value = r; opt.textContent = r;
+        if (r === (m.site_role || 'Участник')) opt.selected = true;
+        sel.appendChild(opt);
+      });
+
+      const btn = document.createElement('button');
+      btn.className = 'admin-row-btn';
+      btn.textContent = 'OK';
+      btn.addEventListener('click', async () => {
+        btn.disabled = true;
+        await fetch('/api/admin/set-role', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ discord_id: m.discord_id, role: sel.value }),
+        });
+        btn.textContent = '✓';
+        btn.classList.add('saved');
+        setTimeout(() => { btn.textContent = 'OK'; btn.classList.remove('saved'); btn.disabled = false; }, 1500);
+      });
+
+      row.appendChild(name);
+      row.appendChild(sel);
+      row.appendChild(btn);
+      list.appendChild(row);
+    });
   }
 
   document.getElementById('cabinetForm').addEventListener('submit', async e => {
