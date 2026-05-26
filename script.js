@@ -216,6 +216,50 @@ if (statNums.length) {
   statNums.forEach(el => counterObs.observe(el));
 }
 
+/* ── GALLERY SLIDER ─────────────────────────────────────── */
+(function () {
+  const slides   = document.querySelectorAll('.gallery-slide');
+  const dotsWrap = document.getElementById('galleryDots');
+  const prevBtn  = document.getElementById('galleryPrev');
+  const nextBtn  = document.getElementById('galleryNext');
+  if (!slides.length) return;
+
+  let current = 0;
+  let timer;
+
+  // создаём точки
+  slides.forEach((_, i) => {
+    const dot = document.createElement('button');
+    dot.className = 'gallery-dot' + (i === 0 ? ' active' : '');
+    dot.addEventListener('click', () => goTo(i));
+    dotsWrap.appendChild(dot);
+  });
+
+  function goTo(n) {
+    slides[current].classList.remove('active');
+    dotsWrap.children[current].classList.remove('active');
+    current = (n + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    dotsWrap.children[current].classList.add('active');
+    resetTimer();
+  }
+
+  function resetTimer() {
+    clearInterval(timer);
+    timer = setInterval(() => goTo(current + 1), 5000);
+  }
+
+  prevBtn.addEventListener('click', () => goTo(current - 1));
+  nextBtn.addEventListener('click', () => goTo(current + 1));
+
+  // пауза при наведении
+  const slider = document.querySelector('.gallery-slider');
+  slider.addEventListener('mouseenter', () => clearInterval(timer));
+  slider.addEventListener('mouseleave', resetTimer);
+
+  resetTimer();
+})();
+
 /* ── DYNAMIC MEMBERS ────────────────────────────────────── */
 const memberModal        = document.getElementById('memberModal');
 const memberModalClose   = document.getElementById('memberModalClose');
