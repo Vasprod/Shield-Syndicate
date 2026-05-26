@@ -215,3 +215,23 @@ if (statNums.length) {
   }, { threshold: 0.6 });
   statNums.forEach(el => counterObs.observe(el));
 }
+
+/* ── NAV AUTH STATE ─────────────────────────────────────── */
+(async () => {
+  const authBtn   = document.getElementById('navAuthBtn');
+  const profile   = document.getElementById('navProfile');
+  const profileAva  = document.getElementById('navProfileAva');
+  const profileName = document.getElementById('navProfileName');
+  if (!authBtn) return;
+
+  try {
+    const res = await fetch('/api/user/me');
+    if (res.ok) {
+      const user = await res.json();
+      authBtn.style.display = 'none';
+      profileAva.src = user.avatar_url;
+      profileName.textContent = user.nickname;
+      profile.style.display = 'flex';
+    }
+  } catch { /* оффлайн или статика — просто показываем кнопку Войти */ }
+})();
