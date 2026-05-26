@@ -216,6 +216,81 @@ if (statNums.length) {
   statNums.forEach(el => counterObs.observe(el));
 }
 
+/* ── DYNAMIC MEMBERS ────────────────────────────────────── */
+const memberModal        = document.getElementById('memberModal');
+const memberModalClose   = document.getElementById('memberModalClose');
+const memberModalAva     = document.getElementById('memberModalAva');
+const memberModalName    = document.getElementById('memberModalName');
+const memberModalRole    = document.getElementById('memberModalRole');
+const memberModalDesc    = document.getElementById('memberModalDesc');
+const memberModalSince   = document.getElementById('memberModalSince');
+
+function openMemberModal(user) {
+  memberModalAva.src        = user.avatar_url;
+  memberModalName.textContent = user.nickname;
+  memberModalRole.textContent = 'Участник';
+  memberModalDesc.textContent = user.description || 'Описание не указано';
+  if (user.joined_at) {
+    const d = new Date(user.joined_at);
+    memberModalSince.textContent = 'В клане с ' + d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+  memberModal.classList.add('open');
+}
+
+memberModalClose.addEventListener('click', () => memberModal.classList.remove('open'));
+memberModal.addEventListener('click', e => { if (e.target === memberModal) memberModal.classList.remove('open'); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') memberModal.classList.remove('open'); });
+
+function addGlow(card) {
+  const glow = document.createElement('span');
+  glow.className = 'card-glow';
+  card.appendChild(glow);
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    glow.style.setProperty('--gx', `${e.clientX - r.left}px`);
+    glow.style.setProperty('--gy', `${e.clientY - r.top}px`);
+  });
+  card.addEventListener('mouseleave', () => {
+    glow.style.setProperty('--gx', '-999px');
+    glow.style.setProperty('--gy', '-999px');
+  });
+}
+
+(async () => {
+  try {
+    const res = await fetch('/api/members');
+    if (!res.ok) return;
+    const members = await res.json();
+    if (!members.length) return;
+
+    const grid = document.querySelector('.members-grid');
+
+    members.forEach(user => {
+      const card = document.createElement('div');
+      card.className = 'member-card rv';
+
+      const hasLongDesc = user.description && user.description.length > 80;
+
+      card.innerHTML = `
+        <div class="member-ava"><img src="${user.avatar_url}" alt="${user.nickname}"></div>
+        <div class="member-name">${user.nickname}</div>
+        <div class="member-role">Участник</div>
+        ${user.description ? `<div class="member-desc">${user.description}</div>` : ''}
+        ${hasLongDesc ? `<button class="member-desc-btn">Подробнее</button>` : ''}
+        <div class="member-tags"></div>
+      `;
+
+      if (hasLongDesc) {
+        card.querySelector('.member-desc-btn').addEventListener('click', () => openMemberModal(user));
+      }
+
+      addGlow(card);
+      obs.observe(card);
+      grid.appendChild(card);
+    });
+  } catch (e) { /* API недоступен (статика/оффлайн) */ }
+})();
+
 /* ── NAV AUTH STATE ─────────────────────────────────────── */
 (async () => {
   const authBtn   = document.getElementById('navAuthBtn');
